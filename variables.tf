@@ -66,7 +66,12 @@ variable "error_redirectable" {
   type = bool
   default = true
 }
+# TTP
 variable "ttp_domain_name" {
   description = "Domain name for the website (i.e. www.example.com)"
+  type        = string
+}
+variable "ttp_zone_id" {
+  description = "ID of the Route 53 Hosted Zone in which to create an alias record"
   type        = string
 }

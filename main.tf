@@ -158,6 +158,20 @@ resource "aws_route53_record" "alias" {
     evaluate_target_health = false
   }
 }
+# TTP
+resource "aws_route53_record" "alias_second" {
+  count = length(var.ttp_zone_id) > 0 ? 1 : 0
+
+  zone_id = var.ttp_zone_id
+  name    = var.ttp_domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.cdn.domain_name
+    zone_id                = aws_cloudfront_distribution.cdn.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
 
 resource "aws_s3_bucket" "redirect" {
   count = length(var.redirects)
