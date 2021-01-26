@@ -92,7 +92,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   is_ipv6_enabled     = true
   default_root_object = var.root_document
   # 複数ドメイン対応
-  aliases             = ["${var.domain_name}", "${var.tpp_domain_name}"]
+  aliases             = ["${var.domain_name}", "${var.ttp_domain_name}"]
 
   custom_error_response {
     error_code         = 403
@@ -150,6 +150,20 @@ resource "aws_route53_record" "alias" {
 
   zone_id = var.zone_id
   name    = var.domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.cdn.domain_name
+    zone_id                = aws_cloudfront_distribution.cdn.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+# TTP
+resource "aws_route53_record" "alias_second" {
+  count = length(var.ttp_zone_id) > 0 ? 1 : 0
+
+  zone_id = var.ttp_zone_id
+  name    = var.ttp_domain_name
   type    = "A"
 
   alias {
