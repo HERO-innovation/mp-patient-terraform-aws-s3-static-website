@@ -92,7 +92,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   is_ipv6_enabled     = true
   default_root_object = var.root_document
   # 複数ドメイン対応
-  aliases             = ["${var.domain_name}", "${var.tpp_domain_name}"]
+  aliases             = ["${var.domain_name}", "${var.ttp_domain_name}"]
 
   custom_error_response {
     error_code         = 403

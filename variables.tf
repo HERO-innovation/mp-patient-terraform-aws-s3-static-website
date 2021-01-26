@@ -66,7 +66,7 @@ variable "error_redirectable" {
   type = bool
   default = true
 }
-variable "tpp_domain_name" {
+variable "ttp_domain_name" {
   description = "Domain name for the website (i.e. www.example.com)"
   type        = string
 }
