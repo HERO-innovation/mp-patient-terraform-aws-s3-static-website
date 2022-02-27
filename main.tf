@@ -1,5 +1,13 @@
 locals {
   public_dir_with_leading_slash = length(var.public_dir) > 0 ? "/${var.public_dir}" : ""
+  static_website_redirect_rules = <<EOF
+  {
+    "protocol": "https",
+    "host_name": "${var.domain_name}",
+    "replace_key_prefix_with": "",
+    "http_redirect_code": "301"
+  }
+  EOF
   static_website_routing_rules  = <<EOF
 [{
     "Condition": {
@@ -13,24 +21,23 @@ locals {
     }
 }]
 EOF
-
 }
 
 resource "aws_s3_bucket" "static_website" {
   bucket = var.domain_name
 
-  website {
+  /*  website {
     index_document = var.root_document
     error_document = var.error_document
 
     routing_rules = length(var.public_dir) > 0 ? local.static_website_routing_rules : ""
-  }
+  } */
 
-  cors_rule {
+  /* cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "PUT"]
     allowed_origins = length(var.allowed_origins) == 0 ? ["*"] : var.allowed_origins
-  }
+  } */
 
   tags = merge(
     {
@@ -39,6 +46,38 @@ resource "aws_s3_bucket" "static_website" {
     var.tags,
   )
 }
+
+resource "aws_s3_bucket_website_configuration" "example" {
+  bucket = var.domain_name
+
+  index_document {
+    suffix = var.root_document
+  }
+
+  error_document {
+    key = var.error_document
+  }
+
+  routing_rule {
+    condition {
+      key_prefix_equals = length(var.public_dir) > 0 ? "${var.public_dir}/${var.public_dir}/" : ""
+    }
+    redirect {
+      replace_key_prefix_with = length(var.public_dir) > 0 ? local.static_website_redirect_rules : ""
+    }
+  }
+}
+
+resource "aws_s3_bucket_cors_configuration" "example" {
+  bucket = var.domain_name
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "PUT"]
+    allowed_origins = length(var.allowed_origins) == 0 ? ["*"] : var.allowed_origins
+  }
+}
+
 
 data "aws_iam_policy_document" "static_website_read_with_secret" {
   statement {
@@ -92,7 +131,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   is_ipv6_enabled     = true
   default_root_object = var.root_document
   # 複数ドメイン対応
-  aliases             = ["${var.domain_name}", "${var.ttp_domain_name}"]
+  aliases = ["${var.domain_name}", "${var.ttp_domain_name}"]
 
   custom_error_response {
     error_code         = 403
