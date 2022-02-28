@@ -31,9 +31,9 @@ resource "aws_s3_bucket" "static_website" {
     error_document = var.error_document
 
     routing_rules = length(var.public_dir) > 0 ? local.static_website_routing_rules : ""
-  } */
+  }
 
-  /* cors_rule {
+  cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "PUT"]
     allowed_origins = length(var.allowed_origins) == 0 ? ["*"] : var.allowed_origins
@@ -63,7 +63,10 @@ resource "aws_s3_bucket_website_configuration" "example" {
       key_prefix_equals = length(var.public_dir) > 0 ? "${var.public_dir}/${var.public_dir}/" : ""
     }
     redirect {
+      protocol = "https"
+      host_name = "${var.domain_name}"
       replace_key_prefix_with = length(var.public_dir) > 0 ? local.static_website_redirect_rules : ""
+      HttpRedirectCode = "301"
     }
   }
 }
