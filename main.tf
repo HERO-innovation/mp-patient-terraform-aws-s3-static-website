@@ -66,7 +66,7 @@ resource "aws_s3_bucket_website_configuration" "example" {
       protocol                = "https"
       host_name               = var.domain_name
       replace_key_prefix_with = length(var.public_dir) > 0 ? local.static_website_redirect_rules : ""
-      HttpRedirectCode        = "301"
+      http_redirect_code      = "301"
     }
   }
 }
