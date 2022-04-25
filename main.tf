@@ -17,7 +17,7 @@ locals {
         "Protocol": "https",
         "HostName": "${var.domain_name}",
         "ReplaceKeyPrefixWith": "",
-        "HttpRedirectCode": "301"
+        "http_redirect_code": "301"
     }
 }]
 EOF
@@ -63,10 +63,10 @@ resource "aws_s3_bucket_website_configuration" "example" {
       key_prefix_equals = length(var.public_dir) > 0 ? "${var.public_dir}/${var.public_dir}/" : ""
     }
     redirect {
-      protocol = "https"
-      host_name = "${var.domain_name}"
+      protocol                = "https"
+      host_name               = var.domain_name
       replace_key_prefix_with = length(var.public_dir) > 0 ? local.static_website_redirect_rules : ""
-      HttpRedirectCode = "301"
+      HttpRedirectCode        = "301"
     }
   }
 }
@@ -215,7 +215,7 @@ resource "aws_route53_record" "alias_second" {
   }
 }
 
-resource "aws_s3_bucket" "redirect" {
+resource "aws_s3_bucket_website_configuration" "redirect" {
   count = length(var.redirects)
 
   bucket = element(var.redirects, count.index)
@@ -317,4 +317,3 @@ resource "aws_route53_record" "redirect" {
     evaluate_target_health = false
   }
 }
-
