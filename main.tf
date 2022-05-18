@@ -215,14 +215,10 @@ resource "aws_route53_record" "alias_second" {
   }
 }
 
-resource "aws_s3_bucket_website_configuration" "redirect" {
+resource "aws_s3_bucket" "redirect" {
   count = length(var.redirects)
 
   bucket = element(var.redirects, count.index)
-
-  website {
-    redirect_all_requests_to = "https://${var.domain_name}"
-  }
 
   tags = merge(
     {
@@ -230,6 +226,17 @@ resource "aws_s3_bucket_website_configuration" "redirect" {
     },
     var.tags,
   )
+}
+
+resource "aws_s3_bucket_website_configuration" "redirect" {
+  count = length(var.redirects)
+
+  bucket = element(var.redirects, count.index)
+
+  redirect_all_requests_to {
+    host_name = var.domain_name
+    protocol = "https"
+  }
 }
 
 resource "aws_cloudfront_distribution" "redirect" {
