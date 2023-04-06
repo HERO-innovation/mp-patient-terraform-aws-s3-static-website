@@ -25,7 +25,7 @@
 
 locals {
   public_dir_with_leading_slash = length(var.public_dir) > 0 ? "/${var.public_dir}" : ""
-  static_website_redirect_rules = "" # 制御文字を含まない空の文字列に変更
+  static_website_redirect_rules = ""
   static_website_routing_rules  = <<EOF
 [{
     "Condition": {
