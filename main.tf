@@ -7,7 +7,7 @@ locals {
     "replace_key_prefix_with": "",
     "http_redirect_code": "301"
   }
-  EOF
+EOF
   static_website_routing_rules  = <<EOF
 [{
     "Condition": {
