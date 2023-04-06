@@ -1,13 +1,31 @@
+#locals {
+#  public_dir_with_leading_slash = length(var.public_dir) > 0 ? "/${var.public_dir}" : ""
+#  static_website_redirect_rules = <<EOF
+#  {
+#    "protocol": "https",
+#    "host_name": "${var.domain_name}",
+#    "replace_key_prefix_with": "",
+#    "http_redirect_code": "301"
+#  }
+#EOF
+#  static_website_routing_rules  = <<EOF
+#[{
+#    "Condition": {
+#        "KeyPrefixEquals": "${var.public_dir}/${var.public_dir}/"
+#    },
+#    "Redirect": {
+#       "Protocol": "https",
+#        "HostName": "${var.domain_name}",
+#        "ReplaceKeyPrefixWith": "",
+#        "http_redirect_code": "301"
+#    }
+#}]
+#EOF
+#}
+
 locals {
   public_dir_with_leading_slash = length(var.public_dir) > 0 ? "/${var.public_dir}" : ""
-  static_website_redirect_rules = <<EOF
-  {
-    "protocol": "https",
-    "host_name": "${var.domain_name}",
-    "replace_key_prefix_with": "",
-    "http_redirect_code": "301"
-  }
-EOF
+  static_website_redirect_rules = "" # 制御文字を含まない空の文字列に変更
   static_website_routing_rules  = <<EOF
 [{
     "Condition": {
