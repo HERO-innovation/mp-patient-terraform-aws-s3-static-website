@@ -26,19 +26,6 @@ EOF
 resource "aws_s3_bucket" "static_website" {
   bucket = var.domain_name
 
-  /*  website {
-    index_document = var.root_document
-    error_document = var.error_document
-
-    routing_rules = length(var.public_dir) > 0 ? local.static_website_routing_rules : ""
-  }
-
-  cors_rule {
-    allowed_headers = ["*"]
-    allowed_methods = ["GET", "PUT"]
-    allowed_origins = length(var.allowed_origins) == 0 ? ["*"] : var.allowed_origins
-  } */
-
   tags = merge(
     {
       "Name" = "${var.domain_name}-static_website"
@@ -235,7 +222,7 @@ resource "aws_s3_bucket_website_configuration" "redirect" {
 
   redirect_all_requests_to {
     host_name = var.domain_name
-    protocol = "https"
+    protocol  = "https"
   }
 }
 
