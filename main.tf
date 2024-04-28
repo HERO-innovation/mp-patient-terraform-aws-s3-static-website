@@ -60,7 +60,7 @@ resource "aws_s3_bucket_website_configuration" "example" {
   }
 
   error_document {
-    key = var.error_document
+    key = var.error_document_404
   }
 
   routing_rule {
