@@ -60,7 +60,7 @@ resource "aws_s3_bucket_website_configuration" "example" {
   }
 
   error_document {
-    key = var.error_document_404
+    key = var.error_document
   }
 
   routing_rule {
@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "static_website_read_with_secret" {
 
     principals {
       type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.cdn.iam_arn]
+      identifiers = ["*"]
     }
 
     condition {
@@ -115,16 +115,17 @@ locals {
   s3_origin_id = "cloudfront-distribution-origin-${var.domain_name}.s3.amazonaws.com${local.public_dir_with_leading_slash}"
 }
 
-resource "aws_cloudfront_origin_access_identity" "cdn" { comment = var.domain_name }
-
 resource "aws_cloudfront_distribution" "cdn" {
   origin {
-    domain_name = aws_s3_bucket.static_website.bucket_regional_domain_name
+    domain_name = aws_s3_bucket.static_website.website_endpoint
     origin_path = local.public_dir_with_leading_slash
     origin_id   = local.s3_origin_id
 
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.cdn.cloudfront_access_identity_path
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1.2", "TLSv1.1", "TLSv1"]
     }
 
     custom_header {
@@ -142,13 +143,13 @@ resource "aws_cloudfront_distribution" "cdn" {
 
   custom_error_response {
     error_code         = 403
-    response_page_path = "/${var.error_document_403}"
+    response_page_path = "/${var.error_document}"
     response_code      = var.error_redirectable ? 200 : 403
   }
 
   custom_error_response {
     error_code         = 404
-    response_page_path = "/${var.error_document_404}"
+    response_page_path = "/${var.error_document}"
     response_code      = var.error_redirectable ? 200 : 404
   }
 
