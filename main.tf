@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "static_website_read_with_secret" {
 
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = [aws_cloudfront_origin_access_identity.cdn.iam_arn]
     }
 
     condition {
@@ -114,6 +114,8 @@ resource "aws_s3_bucket_policy" "static_website_read_with_secret" {
 locals {
   s3_origin_id = "cloudfront-distribution-origin-${var.domain_name}.s3.amazonaws.com${local.public_dir_with_leading_slash}"
 }
+
+resource "aws_cloudfront_origin_access_identity" "cdn" comment =var.domain_name }
 
 resource "aws_cloudfront_distribution" "cdn" {
   origin {
