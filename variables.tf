@@ -39,10 +39,16 @@ variable "root_document" {
   default     = "index.html"
 }
 
-variable "error_document" {
+variable "error_document_403" {
   description = "Document of error pages"
   type        = string
-  default     = "error.html"
+  default     = "403_error.html"
+}
+
+variable "error_document_404" {
+  description = "Document of error pages"
+  type        = string
+  default     = "404_error.html"
 }
 
 variable "min_ttl" {
