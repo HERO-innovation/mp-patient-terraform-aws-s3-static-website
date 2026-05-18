@@ -75,3 +75,14 @@ variable "ttp_zone_id" {
   description = "ID of the Route 53 Hosted Zone in which to create an alias record"
   type        = string
 }
+# Yoake
+variable "yoake_domain_name" {
+  description = "Domain name for the website (yoake)"
+  type        = string
+  default     = ""
+}
+variable "yoake_zone_id" {
+  description = "ID of the Route 53 Hosted Zone for yoake"
+  type        = string
+  default     = ""
+}
